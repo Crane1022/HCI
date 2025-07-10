@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Diet Record</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      margin: 0;
+      background: #f0f4f8;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .phone {
+      width: 400px;
+      height: 100vh;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container {
+      padding: 16px;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    .header, .bottom-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .bottom-nav {
+      padding: 8px 0;
+      border-top: 1px solid #ddd;
+      background: #fff;
+    }
+
+    .nav-item {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .nav-item.active {
+      color: #10b981;
+    }
+
+    .section {
+      margin-top: 20px;
+    }
+
+    .selector {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .option {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      border: 2px solid #ccc;
+      text-align: center;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .option.active {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+
+    .counter {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin: 10px 0;
+    }
+
+    .counter button {
+      font-size: 24px;
+      background: #f0f0f0;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+    }
+
+    .counter span {
+      font-size: 24px;
+    }
+
+    canvas {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="phone">
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <span style="font-size: 24px;">🥬</span>
+        <strong>Diet Record</strong>
+        <span style="font-size: 24px;">🔔</span>
+      </div>
+
+      <!-- Date -->
+      <div style="text-align: center; color: gray; margin-top: 10px;">
+        <script>
+          const now = new Date();
+          const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+          document.write(now.toLocaleDateString('en-US', options));
+        </script>
+      </div>
+
+      <!-- Meal Type -->
+      <div class="section">
+        <h4>Select meal type</h4>
+        <div class="selector">
+          <div class="option active" id="vegOption">
+            🥗<br/>Vegetarian<br/>
+            <small>Plant-based meals</small>
+          </div>
+          <div class="option" id="meatOption">
+            🍖<br/>Meat-based<br/>
+            <small>Includes animal products</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Meal-Free Counter -->
+      <div class="section" style="text-align: center;">
+        <div style="color: gray;">Meat-free meals today</div>
+        <div class="counter">
+          <button onclick="changeCount(-1)">-</button>
+          <span id="mealCount">2</span>
+          <button onclick="changeCount(1)">+</button>
+        </div>
+      </div>
+
+      <!-- CO2 Comparison -->
+      <div class="section" style="background: #f9f9f9; border-radius: 12px; padding: 16px;">
+        <h4 style="display: flex; align-items: center; gap: 8px;">
+          🌱 <span>CO₂ Comparison</span>
+        </h4>
+        <canvas id="co2Chart" width="350" height="200"></canvas>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+      <div class="nav-item active">🏠<br/>Home</div>
+      <div class="nav-item">📊<br/>Stats</div>
+      <div class="nav-item">🎯<br/>Tasks</div>
+      <div class="nav-item">🏆<br/>Rewards</div>
+      <div class="nav-item">👤<br/>Profile</div>
+    </div>
+  </div>
+
+  <!-- Audio for buttons -->
+  <audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2025/02/25/audio_07b0c21a3b.mp3?filename=button-305770.mp3" preload="auto"></audio>
+  <audio id="optionSound" src="https://cdn.pixabay.com/download/audio/2022/03/20/audio_85050dc66d.mp3?filename=old-radio-button-click-97549.mp3" preload="auto"></audio>
+
+  <script>
+    // Meal Option Toggle with Sound
+    const veg = document.getElementById("vegOption");
+    const meat = document.getElementById("meatOption");
+    const optionSound = document.getElementById("optionSound");
+
+    veg.onclick = () => {
+      veg.classList.add("active");
+      meat.classList.remove("active");
+      optionSound.currentTime = 0;
+      optionSound.play();
+    };
+
+    meat.onclick = () => {
+      meat.classList.add("active");
+      veg.classList.remove("active");
+      optionSound.currentTime = 0;
+      optionSound.play();
+    };
+
+    // Meal Counter
+    let count = 2;
+    const counter = document.getElementById("mealCount");
+    const clickSound = document.getElementById("clickSound");
+
+    function changeCount(val) {
+      count = Math.max(0, count + val);
+      counter.textContent = count;
+      clickSound.currentTime = 0;
+      clickSound.play();
+    }
+
+    // Chart.js plugin to highlight today's bar
+    const todayHighlightPlugin = {
+      id: 'highlightToday',
+      beforeDatasetsDraw(chart, args, options) {
+        const {
+          ctx,
+          chartArea: { top, bottom },
+          scales: { x },
+        } = chart;
+
+        const todayIndex = (new Date().getDay() + 6) % 7; // Monday = 0
+        const barX = x.getPixelForValue(todayIndex);
+        const barWidth = x.getPixelForValue(todayIndex + 1) - barX;
+
+        ctx.save();
+        ctx.fillStyle = 'rgba(255, 230, 150, 0.2)';
+        ctx.fillRect(barX - barWidth / 2, top, barWidth, bottom - top);
+        ctx.restore();
+      }
+    };
+
+    // Chart Data
+    const ctx = document.getElementById("co2Chart").getContext("2d");
+    const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    const meatData = [12, 19, 10, 14, 15, 13, 9];
+    const vegData = [5, 9, 6, 4, 3, 7, 6];
+
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "Meat-based",
+            data: meatData,
+            backgroundColor: "#ef4444"
+          },
+          {
+            label: "Vegetarian",
+            data: vegData,
+            backgroundColor: "#10b981"
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "top",
+          },
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+        },
+      },
+      plugins: [todayHighlightPlugin],
+    });
+  </script>
+</body>
+</html>
