@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Record Activity</title>
+  <style>
+    body {
+      margin: 0;
+      background: #f0f4f8;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .phone {
+      width: 400px;
+      height: 100vh;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container {
+      padding: 16px;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    .header, .bottom-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .bottom-nav {
+      padding: 8px 0;
+      border-top: 1px solid #ddd;
+      background: #fff;
+    }
+
+    .nav-item {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .nav-item:hover {
+      background-color: #f0fdf4;
+      color: #10b981;
+    }
+
+    .nav-item.active {
+      color: #10b981;
+      font-weight: bold;
+    }
+
+    .card {
+      background: #e6f5ef;
+      padding: 16px;
+      border-radius: 12px;
+      color: #333;
+      margin-top: 16px;
+    }
+
+    .card h4 {
+      margin: 0 0 6px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .tile {
+      background: #f9f9f9;
+      border-radius: 12px;
+      text-align: center;
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .tile:hover {
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .tile video {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .tile h5 {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .tile p {
+      font-size: 18px;
+      color: #888;
+      margin-top: 6px;
+    }
+
+    .section-title {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .view-all {
+      float: right;
+      color: #6b46c1;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <span style="font-size: 24px;">🍃</span>
+        <strong>Record Activity</strong>
+        <span style="font-size: 24px;">🔔</span>
+      </div>
+
+      <!-- Info Card -->
+      <div class="card">
+        <h4>Track Your Impact</h4>
+        <p style="font-size: 14px; margin: 0;">
+          Record your daily activities to see how they affect your carbon footprint.<br/>
+          <small style="color: gray;">Last recorded: June 1, 2025</small>
+        </p>
+      </div>
+
+      <!-- Category Grid -->
+      <div class="section-title">Select a category</div>
+      <div class="grid">
+        <!-- Transportation -->
+        <div class="tile" onclick="clickSound()" onmouseenter="hoverSound()">
+          <video autoplay muted loop playsinline>
+            <source src="https://videocdn.cdnpk.net/videos/c4aae967-0bf2-567f-81d9-d99d583541b0/horizontal/previews/clear/large.mp4?token=exp=1752418477~hmac=c2aeb4189bde9eba3fb610fd073016085510f785c6a9205624e20c511f0af133" type="video/mp4">
+          </video>
+          <h5>Transportation</h5>
+          <p>→</p>
+        </div>
+
+        <!-- Electricity & Water -->
+        <div class="tile" onclick="clickSound()" onmouseenter="hoverSound()">
+          <video autoplay muted loop playsinline>
+            <source src="https://videocdn.cdnpk.net/videos/aaa60dc3-90f5-50f6-937b-2d2bcec8c0ae/horizontal/previews/clear/large.mp4?token=exp=1752418785~hmac=cfdf8ce224ed74b7b08c5d23a0f400ead4f3a3580c4d0cc79d3f6bb641fa502a" type="video/mp4">
+          </video>
+          <h5>Electricity & Water</h5>
+          <p>→</p>
+        </div>
+
+        <!-- Diet -->
+        <div class="tile" onclick="clickSound(); goToDiet()" onmouseenter="hoverSound()">
+          <video autoplay muted loop playsinline>
+            <source src="https://videocdn.cdnpk.net/videos/afd6ea16-dd22-55ee-bb10-79a05fe71c65/horizontal/previews/watermarked/large.mp4" type="video/mp4">
+          </video>
+          <h5>Diet</h5>
+          <p>→</p>
+        </div>
+
+        <!-- Shopping -->
+        <div class="tile" onclick="clickSound()" onmouseenter="hoverSound()">
+          <video autoplay muted loop playsinline>
+            <source src="https://videocdn.cdnpk.net/videos/2ae5fb3c-f3d4-5e47-8881-c58000987234/horizontal/previews/watermarked/large.mp4" type="video/mp4">
+          </video>
+          <h5>Shopping</h5>
+          <p>→</p>
+        </div>
+      </div>
+
+      <!-- Recent Activities -->
+      <div class="section-title">
+        Recent Activities
+        <span class="view-all">View All</span>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+      <div class="nav-item active" onmouseenter="hoverSound()">🏠<br/>Home</div>
+      <div class="nav-item" onmouseenter="hoverSound()">📊<br/>Stats</div>
+      <div class="nav-item" onmouseenter="hoverSound()">🎯<br/>Tasks</div>
+      <div class="nav-item" onmouseenter="hoverSound()">🏆<br/>Rewards</div>
+      <div class="nav-item" onmouseenter="hoverSound()">👤<br/>Profile</div>
+    </div>
+  </div>
+
+  <!-- Audio Elements -->
+  <audio id="hoverSound" src="https://cdn.pixabay.com/download/audio/2025/01/14/audio_5ba8ff5311.mp3?filename=hover-button-287656.mp3" preload="auto"></audio>
+  <audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/12/29/audio_257d21d95b.mp3?filename=click-button-131479.mp3" preload="auto"></audio>
+
+  <script>
+    function hoverSound() {
+      const audio = document.getElementById("hoverSound");
+      audio.currentTime = 0;
+      audio.play();
+    }
+
+    function clickSound() {
+      const audio = document.getElementById("clickSound");
+      audio.currentTime = 0;
+      audio.play();
+    }
+
+    function goToDiet() {
+      setTimeout(() => {
+        window.location.href = "diet.html";
+      }, 100); // slight delay so sound plays before navigation
+    }
+  </script>
+</body>
+</html>
